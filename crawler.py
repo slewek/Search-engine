@@ -20,6 +20,7 @@ class FIFO_Policy:
 
 
 class Container:
+
     def __init__(self):
         # The name of the crawler"
         self.crawlerName = "IRbot"
@@ -57,7 +58,7 @@ class Container:
         self.storedIncomingURLs = "/" + self.example + "/incoming/"
 
         # If True: debug
-        self.debug = False
+        self.debug = True
 
 
 class Parser(HTMLParser):
@@ -72,6 +73,7 @@ class Parser(HTMLParser):
 
 
 def main():
+    file = open('pages.txt', 'w')
     c = Container()
     # Inject: parse seed links into the base of maintained URLs
     inject(c)
@@ -118,7 +120,8 @@ def main():
 
         ### update urls
         c.generatePolicy.updateURLs(c, newURLs, newURLsWD, iteration)
-        teams_urls.append(newURLsWD)
+        for url in newURLsWD:
+            file.write(url+"\n")
         # Add newly obtained URLs to the container
         if c.debug:
             print("   Maintained URLs...")
@@ -136,9 +139,6 @@ def main():
             for url in newURLsWD:
                 c.URLs.add(url)
 
-
-
-    print(teams_urls)
 
 
 
