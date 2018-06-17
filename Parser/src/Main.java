@@ -4,6 +4,8 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Main {
@@ -13,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) throws TikaException, IOException, SAXException {
         init();
-        //downloadDocuments();
+        downloadDocuments();
         processFiles();
     }
 
@@ -60,10 +62,28 @@ public class Main {
 
         File directory = new File(directoryDocumentsName);
         File[] files = directory.listFiles();
+        String keywords = "";
         if (files != null) {
             for (File file : files) {
-                processor.processHtml(file.getName(), directoryDocumentsName, directoryProcessedDocumentsName);
+                keywords += " " + processor.processHtml(file.getName(), directoryDocumentsName, directoryProcessedDocumentsName);
             }
         }
+        String[] filteredKeywords = keywords.split(" ");
+
+        HashSet<String> dictionary = new HashSet<String>();
+        for (String keyword : filteredKeywords) {
+            if (!"\n\t!@#$%^&*()_+-=[]{}|;',./<>?:".contains(keyword)) {
+                dictionary.add(keyword.toLowerCase());
+            }
+        }
+        saveKeywords(dictionary);
+    }
+
+    private static void saveKeywords(HashSet<String> keywords) throws FileNotFoundException {
+        PrintWriter printWriter = new PrintWriter("keywords.txt");
+        for (String keyword : keywords) {
+            printWriter.write(keyword + "\n");
+        }
+        printWriter.close();
     }
 }

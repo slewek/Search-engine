@@ -9,7 +9,7 @@ import java.io.*;
 
 public class Processor {
 
-    public void processHtml(String document, String inputDirectory, String outputDirectory) throws IOException, TikaException, SAXException {
+    public String processHtml(String document, String inputDirectory, String outputDirectory) throws IOException, TikaException, SAXException {
         BodyContentHandler handler = new BodyContentHandler();
         Metadata metadata = new Metadata();
         FileInputStream inputstream = new FileInputStream(new File(inputDirectory + "/" + document));
@@ -17,8 +17,11 @@ public class Processor {
 
         HtmlParser htmlparser = new HtmlParser();
         htmlparser.parse(inputstream, handler, metadata, pcontext);
+        String keywords = metadata.get("keywords");
 
-        saveResult(document, outputDirectory, handler.toString(), metadata.get("keywords"));
+        saveResult(document, outputDirectory, handler.toString(), keywords);
+
+        return keywords;
     }
 
     private void saveResult(String fileName, String directory, String contents, String keywords) {
