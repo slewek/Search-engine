@@ -2,6 +2,8 @@ import urllib.request as req
 
 from html.parser import HTMLParser
 
+import matplotlib.pyplot as plt
+
 class FIFO_Policy:
     def __init__(self, c):
         self.queue = [s for s in c.seedURLs]
@@ -58,7 +60,7 @@ class Container:
         self.storedIncomingURLs = "/" + self.example + "/incoming/"
 
         # If True: debug
-        self.debug = True
+        self.debug = False
 
 
 class Parser(HTMLParser):
@@ -77,7 +79,9 @@ def main():
     c = Container()
     # Inject: parse seed links into the base of maintained URLs
     inject(c)
-    teams_urls=[]
+    urls=0
+    teams_urls=[urls]
+
 
     for iteration in range(c.iterations):
 
@@ -122,6 +126,8 @@ def main():
         c.generatePolicy.updateURLs(c, newURLs, newURLsWD, iteration)
         for url in newURLsWD:
             file.write(url+"\n")
+        urls+=len(newURLsWD)
+        teams_urls.append(urls)
         # Add newly obtained URLs to the container
         if c.debug:
             print("   Maintained URLs...")
@@ -138,8 +144,8 @@ def main():
                 print("      " + str(url))
             for url in newURLsWD:
                 c.URLs.add(url)
-
-
+    print(teams_urls)
+    draw_plot(teams_urls)
 
 
 # Inject seed URL into a queue
@@ -212,8 +218,8 @@ def filterURLs(c,newURLs):
 # Remove duplicates (duplicates)
 def removeDuplicates(c, newURLs):
     toLeft = set([url for url in newURLs if url not in c.URLs])
-    if c.debug:
-        print("Removed " + str(len(newURLs) - len(toLeft)) + " urls")
+  #  if c.debug:
+    #    print("Removed " + str(len(newURLs) - len(toLeft)) + " urls")
     return toLeft
 
 
@@ -235,7 +241,16 @@ def updateIncomingURLs(c, newURLsWD):
         c.incomingURLs[url].add(c.toFetch)
 
 
+def draw_plot(teams):
+    iterations=[]
+    for i in range(0,len(teams)):
+        iterations.append(i)
 
+    plt.xlabel('Liczba iteracji')
+    plt.ylabel('Liczba pobranych stron')
+    plt.plot(iterations, teams)
+    plt.axis([0, len(iterations), 0, max(teams)])
+    plt.savefig('plot.png')
 
 
 
