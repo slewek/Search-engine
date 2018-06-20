@@ -4,6 +4,8 @@ import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.html.HtmlParser;
 import org.apache.tika.sax.BodyContentHandler;
 import org.xml.sax.SAXException;
+import java.text.Normalizer;
+import java.util.regex.Pattern;
 
 import java.io.*;
 
@@ -19,9 +21,18 @@ public class Processor {
         htmlparser.parse(inputstream, handler, metadata, pcontext);
         String keywords = metadata.get("keywords");
 
-        saveResult(document, outputDirectory, handler.toString(), keywords);
+        String normalizedKeywords = "";
+        try {
+            String nfdNormalizedString = Normalizer.normalize(keywords, Normalizer.Form.NFD);
+            Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+            normalizedKeywords = pattern.matcher(nfdNormalizedString).replaceAll("");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
-        return keywords;
+        saveResult(document, outputDirectory, handler.toString(), normalizedKeywords);
+
+        return normalizedKeywords;
     }
 
     private void saveResult(String fileName, String directory, String contents, String keywords) {

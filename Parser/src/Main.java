@@ -15,7 +15,7 @@ public class Main {
 
     public static void main(String[] args) throws TikaException, IOException, SAXException {
         init();
-        downloadDocuments();
+        //downloadDocuments();
         processFiles();
     }
 
@@ -70,9 +70,10 @@ public class Main {
         }
         String[] filteredKeywords = keywords.split(" ");
 
+        String stopwords = loadStopwords();
         HashSet<String> dictionary = new HashSet<String>();
         for (String keyword : filteredKeywords) {
-            if (!"\n\t!@#$%^&*()_+-=[]{}|;',./<>?:".contains(keyword)) {
+            if (!"\n\t!@#$%^&*()_+-=[]{}|;',./<>?:".contains(keyword) && !stopwords.contains(keyword)) {
                 dictionary.add(keyword.toLowerCase());
             }
         }
@@ -85,5 +86,14 @@ public class Main {
             printWriter.write(keyword + "\n");
         }
         printWriter.close();
+    }
+
+    private static String loadStopwords() throws FileNotFoundException {
+        String stopwords = "";
+        Scanner scanner = new Scanner(new File("stopwords.txt"));
+        while (scanner.hasNextLine()) {
+            stopwords += scanner.nextLine() + " ";
+        }
+        return stopwords;
     }
 }
