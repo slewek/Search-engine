@@ -48,8 +48,8 @@ public class Main {
         while (scanner.hasNextLine()) {
             docValue++;
             File docFile = new File(directoryDocumentsName + "/doc" + docValue + ".html");
+            String url = scanner.nextLine();
             if (!docFile.exists()) {
-                String url = scanner.nextLine();
                 downloader.save(url, directoryDocumentsName, "doc" + docValue);
             } else {
                 System.out.println("Istnieje doc" + docValue + ".html");

@@ -10,7 +10,7 @@ import java.io.*;
 public class Processor {
 
     public String processHtml(String document, String inputDirectory, String outputDirectory) throws IOException, TikaException, SAXException {
-        BodyContentHandler handler = new BodyContentHandler();
+        BodyContentHandler handler = new BodyContentHandler(-1);
         Metadata metadata = new Metadata();
         FileInputStream inputstream = new FileInputStream(new File(inputDirectory + "/" + document));
         ParseContext pcontext = new ParseContext();
