@@ -41,8 +41,8 @@ public class Processor {
         String outName = fileName.substring(0, index) + ".txt";
         try {
             PrintWriter printWriter = new PrintWriter(directory + "/" + outName);
-            printWriter.write(contents.trim().replaceAll("\\s{2,}", " ").replaceAll("\n", " "));
-            printWriter.write("\n" + keywords);
+          //  printWriter.write(contents.trim().replaceAll("\\s{2,}", " ").replaceAll("\n", " "));
+            printWriter.write("\n" + keywords.toLowerCase());
             printWriter.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
