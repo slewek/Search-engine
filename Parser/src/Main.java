@@ -38,7 +38,7 @@ public class Main {
 //        downloadDocuments();
 //        processFiles();
         String[] keywords = readLineByLineJava8("keywords.txt").split("\\s");
- 
+
         System.out.println("Enter your query: ");
         Scanner scanner = new Scanner(System.in);
         String query = scanner.nextLine();
